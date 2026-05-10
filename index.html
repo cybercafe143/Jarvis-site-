@@ -17,7 +17,7 @@
   --muted: #3a5a6a;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; overflow:hidden; }
+html, body { height:100%; height:100dvh; overflow:hidden; }
 
 body {
   background: var(--bg);
@@ -289,12 +289,47 @@ header {
 /* ── RESPONSIVE ── */
 @media(max-width:600px){
   header { padding:.75rem 1rem; }
-  .messages { padding:1rem; }
-  .msg { max-width:92%; }
-  .input-area { padding:.75rem 1rem; }
-  .key-setup { margin:0 1rem .75rem; }
-  .welcome-title { font-size:1.2rem; }
   .hdr-name { font-size:.75rem; }
+  .back-btn { display:none; }
+  
+  /* Fix keyboard covering input on mobile */
+  body {
+    height: 100dvh;
+    height: -webkit-fill-available;
+  }
+  html {
+    height: -webkit-fill-available;
+  }
+  
+  .messages { 
+    padding:.75rem 1rem; 
+    padding-bottom: 1rem;
+  }
+  .msg { max-width:92%; }
+  
+  .input-area { 
+    padding:.6rem 1rem;
+    position: sticky;
+    bottom: 0;
+  }
+  
+  .key-setup { margin:0 1rem .75rem; }
+  .welcome { padding:1.5rem .5rem; }
+  .welcome-title { font-size:1.1rem; }
+  .welcome-icon { width:60px; height:60px; font-size:1.5rem; }
+  .welcome-sub { font-size:.6rem; }
+  
+  .suggestions { gap:.4rem; }
+  .suggestion { font-size:.65rem; padding:.35rem .7rem; }
+  
+  .msg-bubble { font-size:.85rem; }
+  .chat-input { font-size:16px; } /* prevents zoom on iOS */
+  .input-hint { display:none; }
+  
+  .voice-toggle { 
+    font-size:.6rem; 
+    padding:.3rem .6rem;
+  }
 }
 </style>
 </head>
