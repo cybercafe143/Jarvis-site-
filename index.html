@@ -828,10 +828,30 @@ async function checkServerAndBoot() {
   try {
     const res=await fetch(`${API_BASE}/api/health`);
     const data=await res.json();
-    if(!data.groq) document.getElementById('apiModal').classList.add('show');
-    else bootComplete();
-  } catch(e) { document.getElementById('apiModal').classList.add('show'); }
+    // Backend handles API key — always boot directly
+    bootComplete();
+  } catch(e) {
+    // Even if health check fails, boot with available features
+    bootComplete();
+  }
 }
+
+// ── INIT CLEANUP ── ensure fresh state on every load
+(function initCleanup() {
+  // Close code editor panel
+  const ce = document.getElementById('codeEditorPanel');
+  if(ce) ce.style.display = 'none';
+  // Close learn panel
+  const lp = document.getElementById('learnPanel');
+  if(lp) lp.style.display = 'none';
+  // Reset mode tabs to CHAT
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  const chatTab = document.getElementById('tab-chat');
+  if(chatTab) chatTab.classList.add('active');
+  // Clear ceAiChat old messages
+  const ceChat = document.getElementById('ceAiChat');
+  if(ceChat) ceChat.innerHTML = '<div class="ce-ai-msg jarvis"><div class="ce-who">J.A.R.V.I.S</div><div>Code Lab ready, Sir.</div></div>';
+})();
 
 function bootComplete() {
   addMessage('jarvis', `Good day, Sir. All J.A.R.V.I.S systems are fully operational.\n\nRunning on **${currentModel}** in **${currentTone.toUpperCase()}** mode.\n\nCapabilities:\n- 🧠 **Persistent Memory** — I remember you across sessions\n- 🌐 **Web Search** — Real-time internet access\n- 📎 **File Analysis** — PDF, DOCX, images, code\n- 🎤 **Voice Input** — Speak your commands (Hindi/Hinglish supported)\n- 👁️ **Vision** — Analyze images\n- 📱 **WhatsApp Automation** — Type: whatsapp Rahul: hello\n- ⚡ **Streaming** — Real-time responses\n\nHow may I assist you today?`);
