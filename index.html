@@ -597,12 +597,12 @@ body::before { content:''; position:fixed; inset:0; background:repeating-linear-
       </div>
 
       <div class="mode-tabs">
-        <button class="mode-tab" id="tab-chat" onclick="setInputMode(&#39;chat&#39;)" fdprocessedid="fr9889">◈ CHAT</button>
-        <button class="mode-tab" id="tab-search" onclick="setInputMode(&#39;search&#39;)" fdprocessedid="9vlrmk">🌐 SEARCH</button>
-        <button class="mode-tab" id="tab-upload" onclick="setInputMode(&#39;upload&#39;)" fdprocessedid="rjngzd">📎 FILE</button>
-        <button class="mode-tab" id="tab-image" onclick="setInputMode(&#39;image&#39;)" fdprocessedid="iia2en">👁 VISION</button>
-        <button class="mode-tab active" id="tab-code" onclick="setInputMode(&#39;code&#39;)" fdprocessedid="mu1at">💻 CODE</button>
-        <button class="mode-tab" id="tab-learn" onclick="setInputMode(&#39;learn&#39;)" fdprocessedid="pcngei">🎓 LEARN</button>
+        <button class="mode-tab active" id="tab-chat" onclick="setInputMode('chat')">◈ CHAT</button>
+        <button class="mode-tab" id="tab-search" onclick="setInputMode('search')">🌐 SEARCH</button>
+        <button class="mode-tab" id="tab-upload" onclick="setInputMode('upload')">📎 FILE</button>
+        <button class="mode-tab" id="tab-image" onclick="setInputMode('image')">👁 VISION</button>
+        <button class="mode-tab" id="tab-code" onclick="setInputMode('code')">💻 CODE</button>
+        <button class="mode-tab" id="tab-learn" onclick="setInputMode('learn')">🎓 LEARN</button>
       </div>
 
       <div id="uploadZone" ondrop="handleDrop(event)" ondragover="event.preventDefault();this.classList.add(&#39;drag&#39;)" ondragleave="this.classList.remove(&#39;drag&#39;)" style="display: none;">
@@ -1425,8 +1425,19 @@ function addLog(type,text){const log=document.getElementById('activityLog');cons
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // INPUT HELPERS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
-function autoResize(el){el.style.height='44px';el.style.height=Math.min(el.scrollHeight,200)+'px';}
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    e.stopPropagation();
+    sendMessage();
+    return false;
+  }
+}
+function autoResize(el){
+  el.style.height='44px';
+  const newH = Math.min(el.scrollHeight, 120);
+  if(newH > 44) el.style.height = newH+'px';
+}
 
 // HEX GRID
 const hexGrid=document.getElementById('hexGrid');
