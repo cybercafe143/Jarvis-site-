@@ -781,30 +781,8 @@ async function sendMsg() {
       const data = await res.json();
       reply = data.reply;
 
-    } else if(searchOn && text) {
-      // ── WEB SEARCH ──
-      const res = await fetch(`${BACKEND_URL}/api/search`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ query:text, tone:currentTone })
-      });
-      if(!res.ok) { const e=await res.json(); throw new Error(e.error||'Search failed'); }
-      const data = await res.json();
-      reply = data.reply;
-      sources = data.sources || [];
-      searchUsed = true;
-      // If a site was analyzed, show special status
-      if(data.siteAnalyzed) {
-        document.getElementById('status-text').textContent = `Analyzed: ${data.siteAnalyzed}`;
-      }
-
-      // Add to history
-      msgHistory.push({role:'user', content:text});
-      msgHistory.push({role:'assistant', content:reply});
-
     } else {
-      // ── CHAT (JSON, not FormData) ──
-      // Filter history: only include messages with non-empty content
+      // ── SMART CHAT (server decides if search is needed) ──
       const cleanHistory = msgHistory.filter(m => m.role && m.content && m.content.trim() !== '');
 
       const res = await fetch(`${BACKEND_URL}/api/chat`, {
@@ -814,13 +792,19 @@ async function sendMsg() {
           message: text,
           history: cleanHistory.slice(-20),
           tone: currentTone,
-          hinglish: hinglishOn
+          hinglish: hinglishOn,
+          searchEnabled: searchOn
         })
       });
       if(!res.ok) { const e=await res.json(); throw new Error(e.error||'Chat failed'); }
       const data = await res.json();
       reply = data.reply;
+      sources = data.sources || [];
+      searchUsed = data.searchUsed || false;
       if(data.model) modelUsed = data.model;
+      if(data.siteAnalyzed) {
+        document.getElementById('status-text').textContent = `Analyzed: ${data.siteAnalyzed}`;
+      }
 
       // Add to history only AFTER successful response
       msgHistory.push({role:'user', content:text});
