@@ -793,6 +793,10 @@ async function sendMsg() {
       reply = data.reply;
       sources = data.sources || [];
       searchUsed = true;
+      // If a site was analyzed, show special status
+      if(data.siteAnalyzed) {
+        document.getElementById('status-text').textContent = `Analyzed: ${data.siteAnalyzed}`;
+      }
 
       // Add to history
       msgHistory.push({role:'user', content:text});
