@@ -805,6 +805,11 @@ async function sendMsg() {
       if(data.siteAnalyzed) {
         document.getElementById('status-text').textContent = `Analyzed: ${data.siteAnalyzed}`;
       }
+      // Show query type in model info
+      if(data.queryType) {
+        const typeLabel = {simple:'⚡ Fast', standard:'🧠 Standard', deep:'🔬 Deep Reasoning', creative:'🎨 Creative'}[data.queryType] || '';
+        document.getElementById('model-info').textContent = `${data.model||modelUsed} · ${typeLabel}`;
+      }
 
       // Add to history only AFTER successful response
       msgHistory.push({role:'user', content:text});
