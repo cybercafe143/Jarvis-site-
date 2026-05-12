@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<!-- saved from url=(0047)https://jarvischrome-production.up.railway.app/ -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>J.A.R.V.I.S — Mark III Intelligence System</title>
-<link href="./J.A.R.V.I.S — Mark III Intelligence System_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --red: #ff2d2d; --gold: #ffd700; --gold-dim: #b8960a;
@@ -228,6 +226,137 @@ body::before { content:''; position:fixed; inset:0; background:repeating-linear-
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .hex-grid{display:flex;flex-wrap:wrap;gap:3px;padding:12px;justify-content:center}
 .hex{width:14px;height:14px;background:rgba(0,207,255,0.05);border:1px solid rgba(0,207,255,0.1);border-radius:2px;transition:all 0.3s}
+
+/* ── MOBILE 3-DOTS BUTTONS ── */
+.mob-toggle {
+  display:none;
+  width:36px; height:36px;
+  background:rgba(0,207,255,0.05);
+  border:1px solid rgba(0,207,255,0.2);
+  border-radius:4px;
+  cursor:pointer;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  flex-shrink:0;
+  transition:all .2s;
+}
+.mob-toggle:hover {
+  background:rgba(0,207,255,0.12);
+  border-color:rgba(0,207,255,0.5);
+}
+.mob-toggle span {
+  display:block;
+  width:4px; height:4px;
+  border-radius:50%;
+  background:var(--blue);
+  box-shadow:0 0 6px var(--blue);
+  flex-shrink:0;
+}
+
+/* ── MOBILE SIDEBAR OVERLAY ── */
+.mob-overlay {
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:150;
+  backdrop-filter:blur(2px);
+}
+.mob-overlay.show { display:block; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:768px){
+  /* Show hamburger buttons */
+  .mob-toggle { display:flex; }
+
+  /* HUD adjustments */
+  .hud-top { padding:0 10px; gap:6px; }
+  .hud-logo { font-size:12px; letter-spacing:3px; }
+  .hud-center { gap:12px; }
+  .hud-metric-val { font-size:11px; }
+  .hud-metric-label { font-size:7px; }
+  .hud-right { gap:8px; }
+  .status-pill { font-size:7px; padding:2px 6px; }
+  #clock { font-size:10px; }
+
+  /* Full screen layout */
+  .layout {
+    grid-template-columns:1fr;
+    grid-template-rows:1fr;
+    height:100dvh;
+    padding-top:52px;
+  }
+
+  /* Sidebars slide in from sides */
+  .sidebar-left {
+    position:fixed;
+    left:0; top:52px; bottom:0;
+    width:260px;
+    z-index:200;
+    transform:translateX(-100%);
+    transition:transform 0.3s ease;
+    background:rgba(1,8,16,0.98);
+    border-right:1px solid var(--border);
+    overflow-y:auto;
+  }
+  .sidebar-left.open { transform:translateX(0); }
+
+  .sidebar-right {
+    position:fixed;
+    right:0; top:52px; bottom:0;
+    width:240px;
+    z-index:200;
+    transform:translateX(100%);
+    transition:transform 0.3s ease;
+    background:rgba(1,8,16,0.98);
+    border-left:1px solid var(--border);
+    overflow-y:auto;
+  }
+  .sidebar-right.open { transform:translateX(0); }
+
+  /* Chat area full width */
+  .chat-area {
+    grid-column:1;
+    height:100%;
+  }
+
+  /* Input area — fix keyboard overlap */
+  .input-area {
+    position:sticky;
+    bottom:0;
+    padding:8px 10px;
+    padding-bottom:max(8px, env(safe-area-inset-bottom));
+    background:rgba(0,5,15,0.98);
+    z-index:50;
+  }
+
+  /* Input font size 16px prevents iOS zoom */
+  #userInput {
+    font-size:16px;
+    height:40px;
+  }
+
+  /* Mode tabs scrollable */
+  .mode-tabs {
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding-bottom:2px;
+    flex-wrap:nowrap;
+  }
+  .mode-tabs::-webkit-scrollbar { display:none; }
+  .mode-tab { font-size:8px; padding:4px 8px; white-space:nowrap; }
+
+  /* Messages padding */
+  #messages { padding:10px 10px 0; }
+
+  /* Chat header */
+  .chat-header { padding:8px 12px; }
+  .chat-title { font-size:8px; letter-spacing:2px; }
+
+  /* Send button */
+  .send-btn { width:40px; height:40px; font-size:16px; }
+}
 .hex.active{background:rgba(0,207,255,0.2);border-color:var(--blue);box-shadow:0 0 6px rgba(0,207,255,0.3)}
 
 /* GOD MODE */
@@ -312,8 +441,15 @@ body::before { content:''; position:fixed; inset:0; background:repeating-linear-
 
 <!-- Top HUD -->
 <div class="hud-top">
+  <!-- Left 3-dots toggle -->
+  <button class="mob-toggle" onclick="toggleLeftSidebar()" id="leftToggle" title="Menu">
+    <span style="width:4px;height:4px;border-radius:50%;margin:0"></span>
+    <span style="width:4px;height:4px;border-radius:50%;margin:0"></span>
+    <span style="width:4px;height:4px;border-radius:50%;margin:0"></span>
+  </button>
+
   <div class="hud-logo">
-    <div class="arc-reactor" onclick="notify(&#39;Arc Reactor: NOMINAL&#39;,&#39;success&#39;)"></div>
+    <div class="arc-reactor" onclick="notify('Arc Reactor: NOMINAL','success')"></div>
     J·A·R·V·I·S
   </div>
   <div class="hud-center">
@@ -324,11 +460,21 @@ body::before { content:''; position:fixed; inset:0; background:repeating-linear-
   </div>
   <div class="hud-right">
     <div style="padding:3px 10px;border:1px solid rgba(0,207,255,0.2);border-radius:2px;font-size:9px;letter-spacing:2px;color:#3a6070;display:flex;align-items:center;gap:5px;" id="extStatus">◉ EXT OFFLINE</div>
-    <button onclick="toggleProfile()" style="padding:3px 10px;border:1px solid rgba(0,207,255,0.2);border-radius:2px;font-size:9px;letter-spacing:2px;color:#3a6070;background:transparent;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color=&#39;#00cfff&#39;;this.style.borderColor=&#39;#00cfff&#39;" onmouseout="this.style.color=&#39;#3a6070&#39;;this.style.borderColor=&#39;rgba(0,207,255,0.2)&#39;" fdprocessedid="vhhe78">👤 PROFILE</button>
+    <button onclick="toggleProfile()" style="padding:3px 10px;border:1px solid rgba(0,207,255,0.2);border-radius:2px;font-size:9px;letter-spacing:2px;color:#3a6070;background:transparent;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color='#00cfff';this.style.borderColor='#00cfff'" onmouseout="this.style.color='#3a6070';this.style.borderColor='rgba(0,207,255,0.2)'">👤 PROFILE</button>
     <div class="status-pill"><span class="status-dot"></span><span id="aiStatus">ONLINE</span></div>
     <div id="clock">22:21:11</div>
   </div>
+
+  <!-- Right 3-dots toggle -->
+  <button class="mob-toggle" onclick="toggleRightSidebar()" id="rightToggle" title="Stats">
+    <span style="width:4px;height:4px;border-radius:50%;margin:0"></span>
+    <span style="width:4px;height:4px;border-radius:50%;margin:0"></span>
+    <span style="width:4px;height:4px;border-radius:50%;margin:0"></span>
+  </button>
 </div>
+
+<!-- Mobile overlay -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeAllSidebars()"></div>
 
 <!-- Main Layout -->
 <div class="layout">
@@ -520,7 +666,7 @@ body::before { content:''; position:fixed; inset:0; background:repeating-linear-
     </div>
 
     <div class="panel-title">◈ Activity Log</div>
-    <div class="log-area" id="activityLog"><div class="log-item"><span class="log-tag sys">SYS</span><span>Model: llama</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:32 PM</span></div><div class="log-item"><span class="log-tag ai">AI</span><span>Response: 1150ms</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:16 PM</span></div><div class="log-item"><span class="log-tag mem">MEM</span><span>9 memories loaded</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:12 PM</span></div><div class="log-item"><span class="log-tag sys">SYS</span><span>Connected to https://jarvischrome-production.up.railway.app</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:11 PM</span></div><div class="log-item"><span class="log-tag sys">SYS</span><span>Boot sequence complete</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:11 PM</span></div></div>
+    <div class="log-area" id="activityLog"><div class="log-item"><span class="log-tag sys">SYS</span><span>Model: llama</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:32 PM</span></div><div class="log-item"><span class="log-tag ai">AI</span><span>Response: 1150ms</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:16 PM</span></div><div class="log-item"><span class="log-tag mem">MEM</span><span>9 memories loaded</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:12 PM</span></div><div class="log-item"><span class="log-tag sys">SYS</span><span>Connected to https://jarvis.kartikdev.best</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:11 PM</span></div><div class="log-item"><span class="log-tag sys">SYS</span><span>Boot sequence complete</span><span style="margin-left:auto;font-size:8px;opacity:.4">10:16:11 PM</span></div></div>
 
     <div class="panel-title">◈ Long-Term Memory</div>
     <div class="memory-area" id="memoryArea"><div class="memory-item">◈ Quantum Entanglement</div><div class="memory-item">◈ Quantum Intel, Sir appears to be referring to quantum physics or artificial intelligence</div><div class="memory-item">◈ Previous interactions indicate interest in quantum physics and artificial intelligence</div><div class="memory-item">◈ trying to start with a greeting</div><div class="memory-item">◈ user's code is missing basic structure</div><div class="memory-item">◈ This user is learning Quantum Physics and wants to establish clear mission parameters.</div></div>
@@ -603,7 +749,7 @@ body::before { content:''; position:fixed; inset:0; background:repeating-linear-
 </div>
 
 <!-- CODE EDITOR PANEL -->
-<div id="codeEditorPanel" style="display: flex;">
+<div id="codeEditorPanel" style="display:none;">
   <div class="ce-header">
     <div style="display:flex;align-items:center;gap:8px;">
       <div style="font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:4px;color:#00cfff;">◈ CODE LAB</div>
@@ -836,21 +982,30 @@ async function checkServerAndBoot() {
   }
 }
 
-// ── INIT CLEANUP ── ensure fresh state on every load
+/* ── INIT CLEANUP ── ensure fresh state on every load */
 (function initCleanup() {
-  // Close code editor panel
+  // Force code editor CLOSED
   const ce = document.getElementById('codeEditorPanel');
-  if(ce) ce.style.display = 'none';
+  if(ce){ ce.style.display='none'; ce.style.cssText='display:none !important'; }
   // Close learn panel
   const lp = document.getElementById('learnPanel');
-  if(lp) lp.style.display = 'none';
-  // Reset mode tabs to CHAT
-  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  if(lp) lp.style.display='none';
+  // Reset ALL mode tabs — set CHAT as active
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
   const chatTab = document.getElementById('tab-chat');
   if(chatTab) chatTab.classList.add('active');
-  // Clear ceAiChat old messages
+  // Reset ce chat
   const ceChat = document.getElementById('ceAiChat');
-  if(ceChat) ceChat.innerHTML = '<div class="ce-ai-msg jarvis"><div class="ce-who">J.A.R.V.I.S</div><div>Code Lab ready, Sir.</div></div>';
+  if(ceChat) ceChat.innerHTML='<div class="ce-ai-msg jarvis"><div class="ce-who">J.A.R.V.I.S</div><div>Code Lab ready, Sir.</div></div>';
+  // Mobile keyboard fix — scroll input into view
+  const input = document.getElementById('userInput');
+  if(input){
+    input.addEventListener('focus',()=>{
+      setTimeout(()=>{ input.scrollIntoView({behavior:'smooth',block:'end'}); },350);
+    });
+    // Prevent iOS zoom
+    input.style.fontSize='16px';
+  }
 })();
 
 function bootComplete() {
@@ -1457,7 +1612,36 @@ function ceClear(){document.getElementById('ceEditor').value='';document.getElem
 let deepThinkActive=false;
 function toggleDeepThink(){deepThinkActive=!deepThinkActive;notify(deepThinkActive?'Deep Think ON':'Deep Think OFF',deepThinkActive?'success':'');}
 
-</script>
+/* ── MOBILE SIDEBAR TOGGLES ── */
+function toggleLeftSidebar(){
+  const s=document.querySelector('.sidebar-left');
+  const o=document.getElementById('mobOverlay');
+  const isOpen=s.classList.contains('open');
+  closeAllSidebars();
+  if(!isOpen){ s.classList.add('open'); o.classList.add('show'); }
+}
+function toggleRightSidebar(){
+  const s=document.querySelector('.sidebar-right');
+  const o=document.getElementById('mobOverlay');
+  const isOpen=s.classList.contains('open');
+  closeAllSidebars();
+  if(!isOpen){ s.classList.add('open'); o.classList.add('show'); }
+}
+function closeAllSidebars(){
+  document.querySelector('.sidebar-left')?.classList.remove('open');
+  document.querySelector('.sidebar-right')?.classList.remove('open');
+  document.getElementById('mobOverlay')?.classList.remove('show');
+}
 
+// Close sidebars on resize to desktop
+window.addEventListener('resize',()=>{ if(window.innerWidth>768) closeAllSidebars(); });
 
-<span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span></body></html>
+// Fix keyboard push on mobile — scroll to bottom when keyboard opens
+const userInput = document.getElementById('userInput');
+if(userInput){
+  userInput.addEventListener('focus',()=>{
+    setTimeout(()=>{
+      userInput.scrollIntoView({behavior:'smooth',block:'end'});
+    },300);
+  });
+}
