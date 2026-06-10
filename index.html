@@ -10,367 +10,298 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
 :root {
-  --bg: #020408;
-  --bg2: #050c14;
-  --bg3: #081018;
-  --cyan: #00f5ff;
-  --green: #00ff9d;
-  --pink: #ff0080;
-  --text: #c8dde8;
-  --muted: #3a5a6a;
+  --bg:#020408;--bg2:#050c14;--bg3:#081018;
+  --cyan:#00f5ff;--green:#00ff9d;--pink:#ff0080;
+  --text:#c8dde8;--muted:#3a5a6a;--warn:#ffd700;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; height:100dvh; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
-  display: flex; flex-direction: column;
-  height: 100%; height:100dvh;
-  overflow: hidden;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{height:100%;height:100dvh;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  display:flex;flex-direction:column;
+  height:100%;height:100dvh;
+  overflow:hidden;
   background-image:
-    linear-gradient(rgba(0,245,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,245,255,0.015) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(rgba(0,245,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,245,255,.015) 1px,transparent 1px);
+  background-size:40px 40px;
 }
-body::before {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);
 }
 
-/* HEADER */
-header {
-  display:flex; align-items:center; justify-content:space-between;
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;justify-content:space-between;
   padding:.75rem 1.25rem;
-  background: rgba(2,4,8,0.95);
-  border-bottom: 1px solid rgba(0,245,255,0.1);
-  backdrop-filter: blur(20px);
-  position:relative; z-index:50; flex-shrink:0;
+  background:rgba(2,4,8,.95);
+  border-bottom:1px solid rgba(0,245,255,.1);
+  backdrop-filter:blur(20px);
+  position:relative;z-index:50;flex-shrink:0;
 }
-.hdr-left { display:flex; align-items:center; gap:.75rem; }
-.hdr-icon {
-  width:38px; height:38px; border-radius:50%;
-  background: linear-gradient(135deg, #000d1a, #001a2e);
-  border: 1px solid rgba(0,255,157,0.4);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Orbitron',monospace; font-size:.95rem; font-weight:900;
-  color: var(--green); text-shadow: 0 0 12px rgba(0,255,157,0.8);
-  box-shadow: 0 0 12px rgba(0,255,157,0.15);
-  position:relative; overflow:hidden; flex-shrink:0;
-}
-.hdr-icon::after {
-  content:''; position:absolute; inset:0; border-radius:50%;
-  background: conic-gradient(from 0deg, transparent 0%, rgba(0,255,157,0.2) 25%, transparent 50%);
-  animation: rot 3s linear infinite;
-}
-@keyframes rot { to{transform:rotate(360deg)} }
-.hdr-name {
-  font-family:'Orbitron',monospace; font-size:.8rem; font-weight:700;
-  color: var(--green); letter-spacing:.12em;
-  text-shadow: 0 0 8px rgba(0,255,157,0.4);
-}
-.hdr-status {
-  font-family:'Share Tech Mono',monospace; font-size:.6rem;
-  color: var(--muted); display:flex; align-items:center; gap:.35rem; margin-top:1px;
-}
-.sdot { width:5px; height:5px; background:var(--green); border-radius:50%; animation:pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
-.hdr-right { display:flex; align-items:center; gap:.5rem; }
-.hdr-btn {
-  font-family:'Share Tech Mono',monospace; font-size:.6rem;
-  background:none; border:1px solid rgba(255,255,255,0.08);
-  color:var(--muted); padding:.35rem .65rem; cursor:pointer;
-  letter-spacing:.08em; transition:all .2s; border-radius:4px;
-}
-.hdr-btn:hover { border-color:rgba(0,245,255,0.3); color:var(--cyan); }
-.hdr-btn.on { border-color:rgba(0,245,255,0.3); color:var(--cyan); }
-a.hdr-btn { text-decoration:none; }
-
-/* TOOLBAR */
-.toolbar {
-  display:flex; align-items:center; gap:.5rem; padding:.5rem 1.25rem;
-  background: rgba(5,12,20,0.9);
-  border-bottom: 1px solid rgba(0,245,255,0.06);
-  position:relative; z-index:40; flex-shrink:0; flex-wrap:wrap;
-}
-.tool-btn {
-  font-family:'Share Tech Mono',monospace; font-size:.6rem;
-  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
-  color:var(--muted); padding:.3rem .65rem; cursor:pointer;
-  letter-spacing:.06em; transition:all .2s; border-radius:3px;
-  display:flex; align-items:center; gap:.3rem;
-}
-.tool-btn:hover { color:var(--text); border-color:rgba(255,255,255,0.15); }
-.tool-btn.active { color:var(--cyan); border-color:rgba(0,245,255,0.35); background:rgba(0,245,255,0.05); }
-.tool-sep { width:1px; height:16px; background:rgba(255,255,255,0.07); flex-shrink:0; }
-.model-info {
-  font-family:'Share Tech Mono',monospace; font-size:.58rem;
-  color:var(--muted); margin-left:auto; letter-spacing:.05em;
-}
-
-/* MESSAGES */
-.messages {
-  flex:1; overflow-y:auto; padding:1.25rem;
-  display:flex; flex-direction:column; gap:.85rem;
-  position:relative; z-index:1;
-  scrollbar-width:thin; scrollbar-color:rgba(0,245,255,0.12) transparent;
-}
-.messages::-webkit-scrollbar { width:3px; }
-.messages::-webkit-scrollbar-thumb { background:rgba(0,245,255,0.15); border-radius:2px; }
-
-/* Welcome */
-.welcome { text-align:center; padding:2rem 1rem 1.5rem; }
-.welcome-icon {
-  width:72px; height:72px; border-radius:50%; margin:0 auto 1.25rem;
+.hdr-left{display:flex;align-items:center;gap:.75rem;}
+.hdr-icon{
+  width:38px;height:38px;border-radius:50%;
   background:linear-gradient(135deg,#000d1a,#001a2e);
-  border:2px solid rgba(0,255,157,0.3);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Orbitron',monospace; font-size:1.8rem; font-weight:900;
-  color:var(--green); text-shadow:0 0 20px rgba(0,255,157,0.8);
-  box-shadow:0 0 25px rgba(0,255,157,0.1); position:relative; overflow:hidden;
+  border:1px solid rgba(0,255,157,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:.95rem;font-weight:900;
+  color:var(--green);text-shadow:0 0 12px rgba(0,255,157,.8);
+  box-shadow:0 0 12px rgba(0,255,157,.15);
+  position:relative;overflow:hidden;flex-shrink:0;
 }
-.welcome-icon::after {
-  content:''; position:absolute; inset:-2px; border-radius:50%;
-  background:conic-gradient(from 0deg, transparent 0%, rgba(0,255,157,0.2) 25%, transparent 50%);
+.hdr-icon::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(0,255,157,.2) 25%,transparent 50%);
   animation:rot 3s linear infinite;
 }
-.welcome-title { font-family:'Orbitron',monospace; font-size:1.3rem; font-weight:900; color:var(--text); margin-bottom:.3rem; }
-.welcome-title span { color:var(--green); text-shadow:0 0 12px rgba(0,255,157,0.5); }
-.welcome-sub { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:var(--muted); letter-spacing:.1em; margin-bottom:1.5rem; }
-.suggestions { display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center; }
-.sug {
-  font-family:'Share Tech Mono',monospace; font-size:.65rem;
-  color:var(--cyan); border:1px solid rgba(0,245,255,0.18);
-  padding:.35rem .8rem; cursor:pointer; letter-spacing:.04em;
-  transition:all .2s; background:rgba(0,245,255,0.03); border-radius:3px;
+@keyframes rot{to{transform:rotate(360deg)}}
+.hdr-name{font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;color:var(--green);letter-spacing:.12em;text-shadow:0 0 8px rgba(0,255,157,.4);}
+.hdr-status{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;margin-top:1px;}
+.sdot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.hdr-right{display:flex;align-items:center;gap:.5rem;}
+.hdr-btn{
+  font-family:'Share Tech Mono',monospace;font-size:.6rem;
+  background:none;border:1px solid rgba(255,255,255,.08);
+  color:var(--muted);padding:.35rem .65rem;cursor:pointer;
+  letter-spacing:.08em;transition:all .2s;border-radius:4px;
 }
-.sug:hover { background:rgba(0,245,255,0.08); border-color:rgba(0,245,255,0.45); }
+.hdr-btn:hover{border-color:rgba(0,245,255,.3);color:var(--cyan);}
+.hdr-btn.on{border-color:rgba(0,245,255,.3);color:var(--cyan);}
+a.hdr-btn{text-decoration:none;}
+
+/* ── COLD START BANNER ── */
+.cold-banner{
+  display:none;
+  background:rgba(255,215,0,.07);
+  border-bottom:1px solid rgba(255,215,0,.2);
+  padding:.5rem 1.25rem;
+  font-family:'Share Tech Mono',monospace;font-size:.62rem;
+  color:var(--warn);letter-spacing:.05em;
+  align-items:center;gap:.6rem;flex-shrink:0;
+  position:relative;z-index:45;
+}
+.cold-banner.show{display:flex;}
+.cold-bar{
+  height:2px;background:rgba(255,215,0,.15);
+  border-radius:1px;flex:1;overflow:hidden;
+}
+.cold-fill{
+  height:100%;background:var(--warn);border-radius:1px;width:0%;
+  transition:width .5s linear;
+}
+
+/* ── TOOLBAR ── */
+.toolbar{
+  display:flex;align-items:center;gap:.5rem;padding:.5rem 1.25rem;
+  background:rgba(5,12,20,.9);
+  border-bottom:1px solid rgba(0,245,255,.06);
+  position:relative;z-index:40;flex-shrink:0;flex-wrap:wrap;
+}
+.tool-btn{
+  font-family:'Share Tech Mono',monospace;font-size:.6rem;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  color:var(--muted);padding:.3rem .65rem;cursor:pointer;
+  letter-spacing:.06em;transition:all .2s;border-radius:3px;
+  display:flex;align-items:center;gap:.3rem;
+}
+.tool-btn:hover{color:var(--text);border-color:rgba(255,255,255,.15);}
+.tool-btn.active{color:var(--cyan);border-color:rgba(0,245,255,.35);background:rgba(0,245,255,.05);}
+.tool-sep{width:1px;height:16px;background:rgba(255,255,255,.07);flex-shrink:0;}
+.model-info{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--muted);margin-left:auto;letter-spacing:.05em;}
+
+/* ── MESSAGES ── */
+.messages{
+  flex:1;overflow-y:auto;padding:1.25rem;
+  display:flex;flex-direction:column;gap:.85rem;
+  position:relative;z-index:1;
+  scrollbar-width:thin;scrollbar-color:rgba(0,245,255,.12) transparent;
+}
+.messages::-webkit-scrollbar{width:3px;}
+.messages::-webkit-scrollbar-thumb{background:rgba(0,245,255,.15);border-radius:2px;}
+
+/* Welcome */
+.welcome{text-align:center;padding:2rem 1rem 1.5rem;}
+.welcome-icon{
+  width:72px;height:72px;border-radius:50%;margin:0 auto 1.25rem;
+  background:linear-gradient(135deg,#000d1a,#001a2e);
+  border:2px solid rgba(0,255,157,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;
+  color:var(--green);text-shadow:0 0 20px rgba(0,255,157,.8);
+  box-shadow:0 0 25px rgba(0,255,157,.1);position:relative;overflow:hidden;
+}
+.welcome-icon::after{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(0,255,157,.2) 25%,transparent 50%);
+  animation:rot 3s linear infinite;
+}
+.welcome-title{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:900;color:var(--text);margin-bottom:.3rem;}
+.welcome-title span{color:var(--green);text-shadow:0 0 12px rgba(0,255,157,.5);}
+.welcome-sub{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1.5rem;}
+.suggestions{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;}
+.sug{
+  font-family:'Share Tech Mono',monospace;font-size:.65rem;
+  color:var(--cyan);border:1px solid rgba(0,245,255,.18);
+  padding:.35rem .8rem;cursor:pointer;letter-spacing:.04em;
+  transition:all .2s;background:rgba(0,245,255,.03);border-radius:3px;
+}
+.sug:hover{background:rgba(0,245,255,.08);border-color:rgba(0,245,255,.45);}
 
 /* Messages */
-.msg { display:flex; gap:.6rem; animation:msgIn .25s ease; }
-@keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.msg.user { align-self:flex-end; flex-direction:row-reverse; max-width:88%; }
-.msg.bot { max-width:92%; }
-.avatar {
-  width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Orbitron',monospace; font-size:.65rem; font-weight:700;
+.msg{display:flex;gap:.6rem;animation:msgIn .25s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse;max-width:88%;}
+.msg.bot{max-width:92%;}
+.avatar{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;
   margin-top:2px;
 }
-.msg.bot .avatar {
-  background:linear-gradient(135deg,#000d1a,#001a2e);
-  border:1px solid rgba(0,255,157,0.3); color:var(--green);
-  box-shadow:0 0 8px rgba(0,255,157,0.12);
+.msg.bot .avatar{background:linear-gradient(135deg,#000d1a,#001a2e);border:1px solid rgba(0,255,157,.3);color:var(--green);box-shadow:0 0 8px rgba(0,255,157,.12);}
+.msg.user .avatar{background:linear-gradient(135deg,#0a0015,#1a0030);border:1px solid rgba(255,0,128,.3);color:var(--pink);font-size:.6rem;}
+.bubble{padding:.7rem .95rem;font-size:.9rem;line-height:1.65;word-break:break-word;}
+.msg.bot .bubble{
+  background:rgba(0,255,157,.04);border:1px solid rgba(0,255,157,.1);
+  border-radius:3px 10px 10px 10px;color:var(--text);
 }
-.msg.user .avatar {
-  background:linear-gradient(135deg,#0a0015,#1a0030);
-  border:1px solid rgba(255,0,128,0.3); color:var(--pink); font-size:.6rem;
-}
-.bubble {
-  padding:.7rem .95rem; font-size:.9rem; line-height:1.65;
-  word-break:break-word;
-}
-.msg.bot .bubble {
-  background:rgba(0,255,157,0.04); border:1px solid rgba(0,255,157,0.1);
-  border-radius:3px 10px 10px 10px; color:var(--text);
-}
-.msg.bot .bubble.speaking { border-color:rgba(0,255,157,0.4); box-shadow:0 0 12px rgba(0,255,157,0.07); }
-.msg.user .bubble {
-  background:rgba(255,0,128,0.05); border:1px solid rgba(255,0,128,0.12);
-  border-radius:10px 3px 10px 10px; color:var(--text);
-}
-.msg-meta {
-  font-family:'Share Tech Mono',monospace; font-size:.55rem;
-  color:var(--muted); margin-top:.3rem; display:flex; align-items:center; gap:.5rem;
-}
-.copy-btn {
-  background:none; border:none; cursor:pointer; color:var(--muted);
-  font-size:.65rem; padding:.1rem .3rem; transition:color .2s;
-  font-family:'Share Tech Mono',monospace;
-}
-.copy-btn:hover { color:var(--cyan); }
-.search-badge {
-  font-family:'Share Tech Mono',monospace; font-size:.55rem;
-  color:var(--cyan); border:1px solid rgba(0,245,255,0.2);
-  padding:.1rem .4rem; border-radius:2px;
-}
+.msg.bot .bubble.streaming{border-color:rgba(0,245,255,.25);box-shadow:0 0 8px rgba(0,245,255,.05);}
+.msg.bot .bubble.speaking{border-color:rgba(0,255,157,.4);box-shadow:0 0 12px rgba(0,255,157,.07);}
+.msg.user .bubble{background:rgba(255,0,128,.05);border:1px solid rgba(255,0,128,.12);border-radius:10px 3px 10px 10px;color:var(--text);}
+.msg-meta{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--muted);margin-top:.3rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.copy-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.65rem;padding:.1rem .3rem;transition:color .2s;font-family:'Share Tech Mono',monospace;}
+.copy-btn:hover{color:var(--cyan);}
+.search-badge{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--cyan);border:1px solid rgba(0,245,255,.2);padding:.1rem .4rem;border-radius:2px;}
+.intent-badge{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:var(--muted);border:1px solid rgba(255,255,255,.06);padding:.1rem .4rem;border-radius:2px;}
+.token-count{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:var(--muted);}
 
 /* Markdown */
-.bubble h1,.bubble h2,.bubble h3 { color:var(--cyan); font-family:'Orbitron',monospace; margin:.8rem 0 .4rem; font-size:1rem; }
-.bubble h3 { font-size:.9rem; color:var(--green); }
-.bubble p { margin:.4rem 0; }
-.bubble ul,.bubble ol { padding-left:1.2rem; margin:.4rem 0; }
-.bubble li { margin:.2rem 0; }
-.bubble strong { color:var(--text); font-weight:700; }
-.bubble em { color:var(--cyan); font-style:italic; }
-.bubble code:not(pre code) {
-  font-family:'Share Tech Mono',monospace; font-size:.8rem;
-  background:rgba(0,245,255,0.08); border:1px solid rgba(0,245,255,0.15);
-  padding:.1rem .4rem; border-radius:3px; color:var(--cyan);
-}
-.bubble pre {
-  background:#1a1f2e; border:1px solid rgba(0,245,255,0.1);
-  border-radius:6px; overflow:hidden; margin:.6rem 0; position:relative;
-}
-.code-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:.4rem .75rem; background:rgba(0,245,255,0.05);
-  border-bottom:1px solid rgba(0,245,255,0.08);
-}
-.code-lang { font-family:'Share Tech Mono',monospace; font-size:.6rem; color:var(--cyan); letter-spacing:.08em; }
-.code-copy {
-  font-family:'Share Tech Mono',monospace; font-size:.6rem;
-  background:none; border:1px solid rgba(0,245,255,0.2);
-  color:var(--muted); padding:.2rem .5rem; cursor:pointer; border-radius:3px;
-  transition:all .2s; letter-spacing:.04em;
-}
-.code-copy:hover { color:var(--cyan); border-color:rgba(0,245,255,0.5); }
-.bubble pre code { background:none; border:none; padding:.75rem; display:block; font-size:.78rem; }
-.bubble blockquote { border-left:2px solid var(--cyan); padding:.4rem .75rem; margin:.4rem 0; color:var(--muted); font-style:italic; }
-.bubble table { border-collapse:collapse; width:100%; margin:.5rem 0; font-size:.82rem; }
-.bubble th { background:rgba(0,245,255,0.08); color:var(--cyan); padding:.4rem .6rem; border:1px solid rgba(0,245,255,0.15); }
-.bubble td { padding:.35rem .6rem; border:1px solid rgba(255,255,255,0.06); }
-.bubble a { color:var(--cyan); text-decoration:none; border-bottom:1px solid rgba(0,245,255,0.3); }
-.bubble a:hover { border-color:var(--cyan); }
+.bubble h1,.bubble h2,.bubble h3{color:var(--cyan);font-family:'Orbitron',monospace;margin:.8rem 0 .4rem;font-size:1rem;}
+.bubble h3{font-size:.9rem;color:var(--green);}
+.bubble p{margin:.4rem 0;}
+.bubble ul,.bubble ol{padding-left:1.2rem;margin:.4rem 0;}
+.bubble li{margin:.2rem 0;}
+.bubble strong{color:var(--text);font-weight:700;}
+.bubble em{color:var(--cyan);font-style:italic;}
+.bubble code:not(pre code){font-family:'Share Tech Mono',monospace;font-size:.8rem;background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.15);padding:.1rem .4rem;border-radius:3px;color:var(--cyan);}
+.bubble pre{background:#1a1f2e;border:1px solid rgba(0,245,255,.1);border-radius:6px;overflow:hidden;margin:.6rem 0;position:relative;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.4rem .75rem;background:rgba(0,245,255,.05);border-bottom:1px solid rgba(0,245,255,.08);}
+.code-lang{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--cyan);letter-spacing:.08em;}
+.code-copy{font-family:'Share Tech Mono',monospace;font-size:.6rem;background:none;border:1px solid rgba(0,245,255,.2);color:var(--muted);padding:.2rem .5rem;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.04em;}
+.code-copy:hover{color:var(--cyan);border-color:rgba(0,245,255,.5);}
+.bubble pre code{background:none;border:none;padding:.75rem;display:block;font-size:.78rem;}
+.bubble blockquote{border-left:2px solid var(--cyan);padding:.4rem .75rem;margin:.4rem 0;color:var(--muted);font-style:italic;}
+.bubble table{border-collapse:collapse;width:100%;margin:.5rem 0;font-size:.82rem;}
+.bubble th{background:rgba(0,245,255,.08);color:var(--cyan);padding:.4rem .6rem;border:1px solid rgba(0,245,255,.15);}
+.bubble td{padding:.35rem .6rem;border:1px solid rgba(255,255,255,.06);}
+.bubble a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,245,255,.3);}
+.bubble a:hover{border-color:var(--cyan);}
+
+/* Streaming cursor */
+.stream-cursor{display:inline-block;width:2px;height:.85em;background:var(--cyan);margin-left:2px;animation:blink .7s infinite;vertical-align:text-bottom;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
 /* Image preview */
-.img-preview { max-width:200px; max-height:150px; border-radius:6px; border:1px solid rgba(0,245,255,0.2); margin-bottom:.4rem; display:block; }
+.img-preview{max-width:200px;max-height:150px;border-radius:6px;border:1px solid rgba(0,245,255,.2);margin-bottom:.4rem;display:block;}
 
 /* Typing */
-.typing-ind { display:flex; gap:4px; padding:.3rem 0; align-items:center; }
-.typing-ind span { width:6px; height:6px; background:var(--green); border-radius:50%; animation:tdot 1.2s infinite; }
+.typing-ind{display:flex;gap:4px;padding:.3rem 0;align-items:center;}
+.typing-ind span{width:6px;height:6px;background:var(--green);border-radius:50%;animation:tdot 1.2s infinite;}
 .typing-ind span:nth-child(2){animation-delay:.2s}
 .typing-ind span:nth-child(3){animation-delay:.4s}
 @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-6px);opacity:1}}
 
 /* File bar */
-.file-bar {
-  display:none; padding:.5rem 1.25rem;
-  background:rgba(5,12,20,0.9); border-top:1px solid rgba(0,245,255,0.08);
-  align-items:center; gap:.75rem; flex-shrink:0; position:relative; z-index:40;
-}
-.file-bar.show { display:flex; }
-.file-bar-icon { font-size:1.2rem; flex-shrink:0; }
-.file-bar-name { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:var(--muted); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.file-bar-type { font-family:'Share Tech Mono',monospace; font-size:.55rem; color:var(--cyan); border:1px solid rgba(0,245,255,0.2); padding:.1rem .4rem; border-radius:2px; }
-.file-remove { background:none; border:none; color:var(--muted); cursor:pointer; font-size:.8rem; padding:.2rem; transition:color .2s; }
-.file-remove:hover { color:var(--pink); }
+.file-bar{display:none;padding:.5rem 1.25rem;background:rgba(5,12,20,.9);border-top:1px solid rgba(0,245,255,.08);align-items:center;gap:.75rem;flex-shrink:0;position:relative;z-index:40;}
+.file-bar.show{display:flex;}
+.file-bar-icon{font-size:1.2rem;flex-shrink:0;}
+.file-bar-name{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-bar-type{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--cyan);border:1px solid rgba(0,245,255,.2);padding:.1rem .4rem;border-radius:2px;}
+.file-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:.2rem;transition:color .2s;}
+.file-remove:hover{color:var(--pink);}
 
 /* Tone dropdown */
-.tone-wrap { position:relative; }
-.tone-dropdown {
-  display:none; position:absolute; top:calc(100% + 4px); left:0; z-index:200;
-  background:rgba(2,4,8,0.98); border:1px solid rgba(0,245,255,0.15);
-  border-radius:6px; padding:.4rem; min-width:160px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.5);
-}
-.tone-dropdown.open { display:block; }
-.tone-opt {
-  font-family:'Share Tech Mono',monospace; font-size:.6rem; letter-spacing:.06em;
-  color:var(--muted); padding:.35rem .6rem; cursor:pointer; border-radius:3px;
-  transition:all .15s; display:flex; align-items:center; gap:.5rem;
-}
-.tone-opt:hover { color:var(--text); background:rgba(0,245,255,0.06); }
-.tone-opt.active { color:var(--green); background:rgba(0,255,157,0.06); }
+.tone-wrap{position:relative;}
+.tone-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:rgba(2,4,8,.98);border:1px solid rgba(0,245,255,.15);border-radius:6px;padding:.4rem;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.tone-dropdown.open{display:block;}
+.tone-opt{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.06em;color:var(--muted);padding:.35rem .6rem;cursor:pointer;border-radius:3px;transition:all .15s;display:flex;align-items:center;gap:.5rem;}
+.tone-opt:hover{color:var(--text);background:rgba(0,245,255,.06);}
+.tone-opt.active{color:var(--green);background:rgba(0,255,157,.06);}
 
 /* Memory panel */
-.mem-panel {
-  display:none; position:fixed; bottom:80px; right:1.25rem; z-index:200;
-  background:rgba(2,4,8,0.98); border:1px solid rgba(0,245,255,0.15);
-  border-radius:8px; padding:.75rem; width:280px; max-height:340px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.6);
-  overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(0,245,255,0.1) transparent;
+.mem-panel{
+  display:none;position:fixed;bottom:80px;right:1.25rem;z-index:200;
+  background:rgba(2,4,8,.98);border:1px solid rgba(0,245,255,.15);
+  border-radius:8px;padding:.75rem;width:280px;max-height:340px;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,245,255,.1) transparent;
 }
-.mem-panel.open { display:block; }
-.mem-panel-title {
-  font-family:'Orbitron',monospace; font-size:.65rem; color:var(--cyan);
-  letter-spacing:.1em; margin-bottom:.6rem; display:flex; justify-content:space-between; align-items:center;
-}
-.mem-item {
-  font-family:'Share Tech Mono',monospace; font-size:.6rem; color:var(--muted);
-  padding:.4rem 0; border-bottom:1px solid rgba(0,245,255,0.05); line-height:1.4;
-  display:flex; align-items:flex-start; gap:.4rem;
-}
-.mem-item:last-child { border-bottom:none; }
-.mem-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:.65rem; flex-shrink:0; padding:0; transition:color .15s; }
-.mem-del:hover { color:var(--pink); }
-.mem-empty { font-family:'Share Tech Mono',monospace; font-size:.6rem; color:var(--muted); text-align:center; padding:.75rem; }
+.mem-panel.open{display:block;}
+.mem-panel-title{font-family:'Orbitron',monospace;font-size:.65rem;color:var(--cyan);letter-spacing:.1em;margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center;}
+.mem-item{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);padding:.4rem 0;border-bottom:1px solid rgba(0,245,255,.05);line-height:1.4;display:flex;align-items:flex-start;gap:.4rem;}
+.mem-item:last-child{border-bottom:none;}
+.mem-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.65rem;flex-shrink:0;padding:0;transition:color .15s;}
+.mem-del:hover{color:var(--pink);}
+.mem-empty{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);text-align:center;padding:.75rem;}
 
 /* Src chips */
-.src-chips { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.6rem; padding-top:.6rem; border-top:1px solid rgba(0,245,255,0.08); }
-.src-chip {
-  font-family:'Share Tech Mono',monospace; font-size:.55rem; color:var(--cyan);
-  border:1px solid rgba(0,245,255,0.2); padding:.15rem .5rem; border-radius:2px;
-  text-decoration:none; transition:all .15s;
-}
-.src-chip:hover { background:rgba(0,245,255,0.08); border-color:rgba(0,245,255,0.5); }
+.src-chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(0,245,255,.08);}
+.src-chip{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--cyan);border:1px solid rgba(0,245,255,.2);padding:.15rem .5rem;border-radius:2px;text-decoration:none;transition:all .15s;}
+.src-chip:hover{background:rgba(0,245,255,.08);border-color:rgba(0,245,255,.5);}
 
 /* Mode badge */
-.mode-badge {
-  font-family:'Share Tech Mono',monospace; font-size:.55rem; letter-spacing:.06em;
-  color:var(--cyan); border:1px solid rgba(0,245,255,0.2); padding:.15rem .5rem;
-  border-radius:2px; transition:all .2s;
-}
-.mode-badge.search-mode { color:#ffd700; border-color:rgba(255,215,0,0.3); }
-.mode-badge.upload-mode { color:var(--green); border-color:rgba(0,255,157,0.3); }
+.mode-badge{font-family:'Share Tech Mono',monospace;font-size:.55rem;letter-spacing:.06em;color:var(--cyan);border:1px solid rgba(0,245,255,.2);padding:.15rem .5rem;border-radius:2px;transition:all .2s;}
+.mode-badge.search-mode{color:#ffd700;border-color:rgba(255,215,0,.3);}
+.mode-badge.upload-mode{color:var(--green);border-color:rgba(0,255,157,.3);}
 
 /* INPUT */
-.input-area {
+.input-area{
   padding:.75rem 1.25rem;
-  background:rgba(2,4,8,0.95);
-  border-top:1px solid rgba(0,245,255,0.08);
-  position:relative; z-index:50; flex-shrink:0;
+  background:rgba(2,4,8,.95);
+  border-top:1px solid rgba(0,245,255,.08);
+  position:relative;z-index:50;flex-shrink:0;
 }
-.input-row {
-  display:flex; gap:.5rem; align-items:flex-end;
-  background:rgba(255,255,255,0.03);
-  border:1px solid rgba(0,245,255,0.12);
-  border-radius:10px; padding:.5rem .75rem;
+.input-row{
+  display:flex;gap:.5rem;align-items:flex-end;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(0,245,255,.12);
+  border-radius:10px;padding:.5rem .75rem;
   transition:border-color .2s;
 }
-.input-row:focus-within { border-color:rgba(0,245,255,0.28); }
-.input-actions { display:flex; gap:.3rem; align-items:center; flex-shrink:0; }
-.iact-btn {
-  background:none; border:none; cursor:pointer;
-  width:30px; height:30px; display:flex; align-items:center; justify-content:center;
-  color:var(--muted); font-size:.95rem; transition:all .2s; border-radius:5px;
-}
-.iact-btn:hover { color:var(--green); background:rgba(0,255,157,0.08); }
-.iact-btn.listening { color:var(--pink); animation:pulse 1s infinite; }
-.chat-input {
-  flex:1; background:none; border:none; outline:none;
-  color:var(--text); font-size:16px;
-  font-family:'Rajdhani',sans-serif; font-weight:500;
-  resize:none; max-height:120px; min-height:24px;
-  line-height:1.5;
-}
-.chat-input::placeholder { color:var(--muted); font-family:'Share Tech Mono',monospace; font-size:.7rem; }
-.send-btn {
-  width:34px; height:34px; border-radius:7px;
-  background:linear-gradient(135deg,var(--green),var(--cyan));
-  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
-  font-size:.85rem; transition:all .2s; flex-shrink:0; color:#000; font-weight:900;
-}
-.send-btn:hover { transform:scale(1.05); box-shadow:0 0 12px rgba(0,255,157,0.3); }
-.send-btn:disabled { opacity:.3; cursor:not-allowed; transform:none; box-shadow:none; }
-.input-hint {
-  font-family:'Share Tech Mono',monospace; font-size:.55rem;
-  color:var(--muted); text-align:center; margin-top:.4rem; letter-spacing:.04em;
-}
-.input-hint a { color:var(--cyan); text-decoration:none; }
+.input-row:focus-within{border-color:rgba(0,245,255,.28);}
+.input-actions{display:flex;gap:.3rem;align-items:center;flex-shrink:0;}
+.iact-btn{background:none;border:none;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.95rem;transition:all .2s;border-radius:5px;}
+.iact-btn:hover{color:var(--green);background:rgba(0,255,157,.08);}
+.iact-btn.listening{color:var(--pink);animation:pulse 1s infinite;}
+.chat-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:16px;font-family:'Rajdhani',sans-serif;font-weight:500;resize:none;max-height:120px;min-height:24px;line-height:1.5;}
+.chat-input::placeholder{color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.7rem;}
+.send-btn{width:34px;height:34px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--cyan));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s;flex-shrink:0;color:#000;font-weight:900;}
+.send-btn:hover{transform:scale(1.05);box-shadow:0 0 12px rgba(0,255,157,.3);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none;}
+/* Stop button */
+.stop-btn{width:34px;height:34px;border-radius:7px;background:rgba(255,0,128,.15);border:1px solid rgba(255,0,128,.3);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.75rem;transition:all .2s;flex-shrink:0;color:var(--pink);}
+.stop-btn.show{display:flex;}
+.stop-btn:hover{background:rgba(255,0,128,.25);}
+.input-hint{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--muted);text-align:center;margin-top:.4rem;letter-spacing:.04em;}
+.input-hint a{color:var(--cyan);text-decoration:none;}
 
 /* MOBILE */
 @media(max-width:600px){
-  header { padding:.6rem 1rem; }
-  .toolbar { padding:.4rem 1rem; gap:.35rem; }
-  .tool-btn { font-size:.55rem; padding:.25rem .5rem; }
-  .model-info { display:none; }
-  .messages { padding:.75rem; gap:.6rem; }
-  .msg.bot,.msg.user { max-width:96%; }
-  .bubble { font-size:.85rem; padding:.6rem .8rem; }
-  .input-area { padding:.6rem 1rem; }
-  .input-hint { display:none; }
-  a.hdr-btn:first-child { display:none; }
+  header{padding:.6rem 1rem;}
+  .toolbar{padding:.4rem 1rem;gap:.35rem;}
+  .tool-btn{font-size:.55rem;padding:.25rem .5rem;}
+  .model-info{display:none;}
+  .messages{padding:.75rem;gap:.6rem;}
+  .msg.bot,.msg.user{max-width:96%;}
+  .bubble{font-size:.85rem;padding:.6rem .8rem;}
+  .input-area{padding:.6rem 1rem;}
+  .input-hint{display:none;}
+  a.hdr-btn:first-child{display:none;}
+  .cold-banner{padding:.4rem 1rem;font-size:.58rem;}
 }
 </style>
 </head>
@@ -383,7 +314,7 @@ a.hdr-btn { text-decoration:none; }
     <div>
       <div class="hdr-name">J.A.R.V.I.S</div>
       <div class="hdr-status">
-        <span class="sdot"></span>
+        <span class="sdot" id="sdot"></span>
         <span id="status-text">Initializing...</span>
       </div>
     </div>
@@ -394,6 +325,13 @@ a.hdr-btn { text-decoration:none; }
     <button class="hdr-btn" onclick="clearChat()">🗑 Clear</button>
   </div>
 </header>
+
+<!-- COLD START BANNER -->
+<div class="cold-banner" id="cold-banner">
+  <span>⚡ Warming up server — first message takes ~20s on free tier...</span>
+  <div class="cold-bar"><div class="cold-fill" id="cold-fill"></div></div>
+  <span id="cold-timer">0s</span>
+</div>
 
 <!-- TOOLBAR -->
 <div class="toolbar">
@@ -435,7 +373,7 @@ a.hdr-btn { text-decoration:none; }
 <div class="mem-panel" id="mem-panel">
   <div class="mem-panel-title">
     <span>🧠 LONG-TERM MEMORY</span>
-    <button onclick="clearAllMemory()" style="background:none;border:1px solid rgba(255,0,128,0.3);color:var(--pink);font-family:'Share Tech Mono',monospace;font-size:.55rem;padding:.1rem .4rem;border-radius:2px;cursor:pointer;letter-spacing:.04em;">CLEAR ALL</button>
+    <button onclick="clearAllMemory()" style="background:none;border:1px solid rgba(255,0,128,.3);color:var(--pink);font-family:'Share Tech Mono',monospace;font-size:.55rem;padding:.1rem .4rem;border-radius:2px;cursor:pointer;letter-spacing:.04em;">CLEAR ALL</button>
   </div>
   <div id="mem-list"><div class="mem-empty">Loading memories...</div></div>
 </div>
@@ -467,27 +405,38 @@ a.hdr-btn { text-decoration:none; }
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
       oninput="autoResize(this)"></textarea>
     <button class="send-btn" id="send-btn" onclick="sendMsg()">➤</button>
+    <button class="stop-btn" id="stop-btn" onclick="stopStream()" title="Stop generating">■</button>
   </div>
   <div class="input-hint">JARVIS v2.0 · <a href="https://kartikdev.best">kartikdev.best</a> · Shift+Enter for new line</div>
 </div>
 
 <script>
-/* ── CONFIG ── */
+/* ════════════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════════════ */
 const BACKEND_URL = 'https://jarvis-backend-cf70.onrender.com';
+const WARMUP_TIMEOUT = 35000; // 35s before showing cold banner
 
-let voiceOn = false;
-let searchOn = true;
-let hinglishOn = false;
-let currentTone = 'jarvis';
-let isListening = false;
-let isSending = false;
-let recognition = null;
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let voiceOn      = false;
+let searchOn     = true;
+let hinglishOn   = false;
+let currentTone  = 'jarvis';
+let isListening  = false;
+let isSending    = false;
+let msgHistory   = [];
+let recognition  = null;
 let selectedFile = null;
+let abortCtrl    = null;     // ← FIX: abort controller for stopping streams
+let serverWarm   = false;    // tracks if server has responded at least once
+let coldTimer    = null;
+let coldStart    = 0;
 
-/* ── msgHistory: ONLY user+assistant turns, NO welcome bot message ── */
-let msgHistory = [];
-
-/* ── VOICE ── */
+/* ════════════════════════════════════════════════
+   VOICE (TTS)
+════════════════════════════════════════════════ */
 const synth = window.speechSynthesis;
 let jarvisVoice = null;
 function loadVoices() {
@@ -500,374 +449,573 @@ function loadVoices() {
 loadVoices();
 if(synth.onvoiceschanged!==undefined) synth.onvoiceschanged = loadVoices;
 
-function speak(text, el) {
+function speak(text,el){
   if(!voiceOn) return;
   synth.cancel();
-  const clean = text.replace(/[#*`_~\[\]]/g,'').replace(/```[\s\S]*?```/g,'[code block]');
+  const clean = text.replace(/[#*`_~\[\]]/g,'').replace(/```[\s\S]*?```/g,'[code block]').slice(0,500);
   const utt = new SpeechSynthesisUtterance(clean);
-  utt.voice = jarvisVoice; utt.rate = 0.92; utt.pitch = 0.85;
+  utt.voice=jarvisVoice; utt.rate=0.92; utt.pitch=0.85;
   if(el){ utt.onstart=()=>el.classList.add('speaking'); utt.onend=()=>el.classList.remove('speaking'); }
   synth.speak(utt);
 }
-
-function toggleVoice() {
-  voiceOn = !voiceOn; synth.cancel();
-  const btn = document.getElementById('voice-btn');
-  btn.textContent = voiceOn ? '🔊 Voice ON' : '🔇 Voice OFF';
-  btn.classList.toggle('on', voiceOn);
+function toggleVoice(){
+  voiceOn=!voiceOn; synth.cancel();
+  const b=document.getElementById('voice-btn');
+  b.textContent=voiceOn?'🔊 Voice ON':'🔇 Voice OFF';
+  b.classList.toggle('on',voiceOn);
 }
 
-/* ── TOOLBAR ── */
-function toggleSearch() {
-  searchOn = !searchOn;
-  document.getElementById('search-btn').classList.toggle('active', searchOn);
-  document.getElementById('mode-badge').textContent = searchOn ? 'SEARCH MODE' : 'CHAT MODE';
-  document.getElementById('mode-badge').className = 'mode-badge' + (searchOn ? ' search-mode' : '');
+/* ════════════════════════════════════════════════
+   TOOLBAR
+════════════════════════════════════════════════ */
+function toggleSearch(){
+  searchOn=!searchOn;
+  document.getElementById('search-btn').classList.toggle('active',searchOn);
+  updateModeBadge();
 }
-
-function toggleHinglish() {
-  hinglishOn = !hinglishOn;
-  document.getElementById('hinglish-btn').classList.toggle('active', hinglishOn);
+function toggleHinglish(){
+  hinglishOn=!hinglishOn;
+  document.getElementById('hinglish-btn').classList.toggle('active',hinglishOn);
 }
-
-function toggleToneMenu() {
-  document.getElementById('tone-menu').classList.toggle('open');
-}
-
-function setTone(tone, el) {
-  currentTone = tone;
-  document.getElementById('tone-label').textContent = tone.toUpperCase();
+function toggleToneMenu(){ document.getElementById('tone-menu').classList.toggle('open'); }
+function setTone(tone,el){
+  currentTone=tone;
+  document.getElementById('tone-label').textContent=tone.toUpperCase();
   document.querySelectorAll('.tone-opt').forEach(o=>o.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tone-menu').classList.remove('open');
 }
+function updateModeBadge(){
+  const badge=document.getElementById('mode-badge');
+  if(selectedFile){ badge.textContent='UPLOAD MODE'; badge.className='mode-badge upload-mode'; return; }
+  badge.textContent=searchOn?'SEARCH MODE':'CHAT MODE';
+  badge.className='mode-badge'+(searchOn?' search-mode':'');
+}
 
-/* ── FILE HANDLING ── */
-function handleFile(input) {
-  const file = input.files[0];
-  if(!file) return;
-  selectedFile = file;
-  const isImg = file.type.startsWith('image/');
-  document.getElementById('file-bar-icon').textContent = isImg ? '🖼️' : (file.type==='application/pdf' ? '📄' : '📎');
-  document.getElementById('file-bar-name').textContent = file.name;
-  document.getElementById('file-bar-type').textContent = isImg ? 'IMAGE' : (file.type==='application/pdf' ? 'PDF' : 'FILE');
+/* ════════════════════════════════════════════════
+   FILE HANDLING
+════════════════════════════════════════════════ */
+function handleFile(input){
+  const file=input.files[0]; if(!file) return;
+  selectedFile=file;
+  const isImg=file.type.startsWith('image/');
+  const isPdf=file.type==='application/pdf';
+  document.getElementById('file-bar-icon').textContent=isImg?'🖼️':isPdf?'📄':'📎';
+  document.getElementById('file-bar-name').textContent=file.name;
+  document.getElementById('file-bar-type').textContent=isImg?'IMAGE':isPdf?'PDF':'FILE';
   document.getElementById('file-bar').classList.add('show');
-  document.getElementById('mode-badge').textContent = 'UPLOAD MODE';
-  document.getElementById('mode-badge').className = 'mode-badge upload-mode';
+  updateModeBadge();
 }
-
-function removeFile() {
-  selectedFile = null;
+function removeFile(){
+  selectedFile=null;
   document.getElementById('file-bar').classList.remove('show');
-  document.getElementById('file-input').value = '';
-  document.getElementById('mode-badge').textContent = searchOn ? 'SEARCH MODE' : 'CHAT MODE';
-  document.getElementById('mode-badge').className = 'mode-badge' + (searchOn ? ' search-mode' : '');
+  document.getElementById('file-input').value='';
+  updateModeBadge();
 }
 
-/* ── MARKDOWN RENDER ── */
-marked.setOptions({ breaks: true, gfm: true });
+/* ════════════════════════════════════════════════
+   MARKDOWN RENDER
+════════════════════════════════════════════════ */
+marked.setOptions({breaks:true,gfm:true});
 
-function renderMarkdown(text) {
-  let html = marked.parse(text);
-  html = html.replace(/<pre><code class="language-(\w+)">/g, (_, lang) => {
+function renderMarkdown(text){
+  let html=marked.parse(text);
+  html=html.replace(/<pre><code class="language-(\w+)">/g,(_,lang)=>{
     return `<pre><div class="code-header"><span class="code-lang">${lang.toUpperCase()}</span><button class="code-copy" onclick="copyCode(this)">COPY</button></div><code class="language-${lang}">`;
   });
-  html = html.replace(/<pre><code(?! class)>/g, `<pre><div class="code-header"><span class="code-lang">CODE</span><button class="code-copy" onclick="copyCode(this)">COPY</button></div><code>`);
+  html=html.replace(/<pre><code(?! class)>/g,`<pre><div class="code-header"><span class="code-lang">CODE</span><button class="code-copy" onclick="copyCode(this)">COPY</button></div><code>`);
   return html;
 }
-
-function copyCode(btn) {
-  const code = btn.closest('pre').querySelector('code').innerText;
+function copyCode(btn){
+  const code=btn.closest('pre').querySelector('code').innerText;
   navigator.clipboard.writeText(code).then(()=>{
-    btn.textContent = 'COPIED!'; btn.style.color = 'var(--green)';
-    setTimeout(()=>{ btn.textContent='COPY'; btn.style.color=''; }, 2000);
+    btn.textContent='COPIED!'; btn.style.color='var(--green)';
+    setTimeout(()=>{btn.textContent='COPY';btn.style.color='';},2000);
   });
 }
 
-/* ── UI HELPERS ── */
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+/* ════════════════════════════════════════════════
+   UI HELPERS
+════════════════════════════════════════════════ */
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+function resetInput(){
+  const inp=document.getElementById('chat-input');
+  inp.value=''; inp.style.height='auto';
+}
+function nowTime(){ return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}); }
+function setStatus(text,color='var(--muted)'){
+  document.getElementById('status-text').textContent=text;
 }
 
-function resetInput() {
-  const inp = document.getElementById('chat-input');
-  inp.value = '';
-  inp.style.height = 'auto';
+/* ════════════════════════════════════════════════
+   COLD START BANNER
+════════════════════════════════════════════════ */
+function startColdTimer(){
+  if(serverWarm) return;
+  coldStart=Date.now();
+  const banner=document.getElementById('cold-banner');
+  const fill=document.getElementById('cold-fill');
+  const timerEl=document.getElementById('cold-timer');
+  banner.classList.add('show');
+  coldTimer=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-coldStart)/1000);
+    timerEl.textContent=elapsed+'s';
+    fill.style.width=Math.min(elapsed/35*100,100)+'%';
+  },500);
+}
+function stopColdTimer(){
+  serverWarm=true;
+  const banner=document.getElementById('cold-banner');
+  banner.classList.remove('show');
+  if(coldTimer){ clearInterval(coldTimer); coldTimer=null; }
 }
 
-function nowTime() {
-  return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-}
+/* ════════════════════════════════════════════════
+   ADD MESSAGE TO UI
+════════════════════════════════════════════════ */
+function addMsg(type,text,imgUrl=null,searchUsed=false,sources=[],intentLabel='',tokenCount=0){
+  const msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');
+  wrap.className=`msg ${type}`;
 
-function addMsg(type, text, imgUrl=null, searchUsed=false, sources=[]) {
-  const msgs = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = `msg ${type}`;
+  const avatar=document.createElement('div');
+  avatar.className='avatar';
+  avatar.textContent=type==='bot'?'J':'U';
 
-  const avatar = document.createElement('div');
-  avatar.className = 'avatar';
-  avatar.textContent = type==='bot' ? 'J' : 'U';
+  const right=document.createElement('div');
+  right.style.flex='1'; right.style.minWidth='0';
 
-  const right = document.createElement('div');
-  right.style.flex = '1';
-  right.style.minWidth = '0';
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
 
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble';
-
-  if(imgUrl) {
-    const img = document.createElement('img');
-    img.src = imgUrl; img.className = 'img-preview'; img.alt = 'uploaded';
+  if(imgUrl){
+    const img=document.createElement('img');
+    img.src=imgUrl; img.className='img-preview'; img.alt='uploaded';
     bubble.appendChild(img);
   }
 
-  if(type === 'bot') {
-    const render = document.createElement('div');
-    render.innerHTML = renderMarkdown(text);
-    render.querySelectorAll('pre code').forEach(el => {
-      try { hljs.highlightElement(el); } catch(e){}
-    });
+  if(type==='bot'){
+    const render=document.createElement('div');
+    render.innerHTML=renderMarkdown(text);
+    render.querySelectorAll('pre code').forEach(el=>{try{hljs.highlightElement(el);}catch(e){}});
     bubble.appendChild(render);
 
-    // Source chips
-    if(sources && sources.length > 0) {
-      const chips = document.createElement('div');
-      chips.className = 'src-chips';
+    if(sources&&sources.length>0){
+      const chips=document.createElement('div');
+      chips.className='src-chips';
       sources.slice(0,4).forEach(s=>{
-        if(s.url) {
-          const a = document.createElement('a');
+        if(s.url){
+          const a=document.createElement('a');
           a.className='src-chip'; a.href=s.url; a.target='_blank';
-          a.textContent = s.title ? s.title.slice(0,30) : s.url.replace(/https?:\/\//,'').slice(0,30);
+          a.textContent=(s.title||s.url).replace(/https?:\/\//,'').slice(0,30);
           chips.appendChild(a);
         }
       });
       if(chips.children.length) bubble.appendChild(chips);
     }
   } else {
-    const p = document.createElement('p');
-    p.textContent = text;
+    const p=document.createElement('p'); p.textContent=text;
     bubble.appendChild(p);
   }
 
-  const meta = document.createElement('div');
-  meta.className = 'msg-meta';
-  meta.innerHTML = `<span>${nowTime()}</span>`;
-  if(searchUsed) meta.innerHTML += `<span class="search-badge">🔍 web</span>`;
-  if(type === 'bot') {
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'copy-btn'; copyBtn.textContent = 'copy';
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(text).then(()=>{
-        copyBtn.textContent='copied!';
-        setTimeout(()=>copyBtn.textContent='copy', 2000);
-      });
-    };
+  const meta=document.createElement('div');
+  meta.className='msg-meta';
+  meta.innerHTML=`<span>${nowTime()}</span>`;
+  if(searchUsed) meta.innerHTML+=`<span class="search-badge">🔍 web</span>`;
+  if(intentLabel) meta.innerHTML+=`<span class="intent-badge">${intentLabel}</span>`;
+  if(tokenCount>0) meta.innerHTML+=`<span class="token-count">${tokenCount} chars</span>`;
+
+  if(type==='bot'){
+    const copyBtn=document.createElement('button');
+    copyBtn.className='copy-btn'; copyBtn.textContent='copy';
+    copyBtn.onclick=()=>{ navigator.clipboard.writeText(text).then(()=>{ copyBtn.textContent='copied!'; setTimeout(()=>copyBtn.textContent='copy',2000); }); };
     meta.appendChild(copyBtn);
   }
 
-  right.appendChild(bubble);
-  right.appendChild(meta);
-  wrap.appendChild(avatar);
-  wrap.appendChild(right);
+  right.appendChild(bubble); right.appendChild(meta);
+  wrap.appendChild(avatar); wrap.appendChild(right);
   msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
   return bubble;
 }
 
-function addTyping() {
-  const msgs = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg bot'; wrap.id = 'typing-wrap';
-  wrap.innerHTML = `<div class="avatar">J</div><div><div class="bubble"><div class="typing-ind"><span></span><span></span><span></span></div></div></div>`;
+function addTyping(){
+  const msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');
+  wrap.className='msg bot'; wrap.id='typing-wrap';
+  wrap.innerHTML=`<div class="avatar">J</div><div><div class="bubble"><div class="typing-ind"><span></span><span></span><span></span></div></div></div>`;
   msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
 }
+function removeTyping(){ document.getElementById('typing-wrap')?.remove(); }
 
-function removeTyping() {
-  document.getElementById('typing-wrap')?.remove();
-}
-
-function clearChat() {
-  document.getElementById('messages').innerHTML = '';
-  msgHistory = [];
+function clearChat(){
+  document.getElementById('messages').innerHTML='';
+  msgHistory=[];
   synth.cancel();
 }
 
-/* ── MEMORY ── */
-async function loadMemories() {
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/memory`);
-    const data = await res.json();
-    const list = document.getElementById('mem-list');
-    const mems = data.memories || [];
-    if(mems.length === 0) {
-      list.innerHTML = '<div class="mem-empty">No memories yet</div>';
-      return;
-    }
-    list.innerHTML = '';
-    mems.forEach(m => {
-      const item = document.createElement('div');
-      item.className = 'mem-item';
-      item.innerHTML = `<span style="flex:1">${m.summary || m.content}</span><button class="mem-del" onclick="deleteMemory('${m.id}',this)">✕</button>`;
+/* ════════════════════════════════════════════════
+   MEMORY
+════════════════════════════════════════════════ */
+async function loadMemories(){
+  try{
+    const res=await fetch(`${BACKEND_URL}/api/memory`);
+    const data=await res.json();
+    const list=document.getElementById('mem-list');
+    const mems=data.memories||[];
+    if(mems.length===0){ list.innerHTML='<div class="mem-empty">No memories yet</div>'; return; }
+    list.innerHTML='';
+    mems.forEach(m=>{
+      const item=document.createElement('div');
+      item.className='mem-item';
+      item.dataset.id=m.id; // ← FIX: store ID in dataset, not onclick regex
+      item.innerHTML=`<span style="flex:1">${m.summary||m.content}</span><button class="mem-del" onclick="deleteMemory(this)">✕</button>`;
       list.appendChild(item);
     });
-  } catch(e) {
-    document.getElementById('mem-list').innerHTML = '<div class="mem-empty">Memory offline</div>';
+  } catch(e){
+    document.getElementById('mem-list').innerHTML='<div class="mem-empty">Memory offline</div>';
   }
 }
 
-async function deleteMemory(id, btn) {
-  try {
-    await fetch(`${BACKEND_URL}/api/memory/${id}`, {method:'DELETE'});
-    btn.closest('.mem-item').remove();
-  } catch(e) {}
+async function deleteMemory(btn){ // ← FIX: takes btn not id
+  const item=btn.closest('.mem-item');
+  const id=item.dataset.id;
+  try{ await fetch(`${BACKEND_URL}/api/memory/${id}`,{method:'DELETE'}); item.remove(); } catch(e){}
 }
 
-async function clearAllMemory() {
+async function clearAllMemory(){
   if(!confirm('Delete all memories?')) return;
-  const items = document.querySelectorAll('.mem-item');
-  for(const item of items) {
-    const btn = item.querySelector('.mem-del');
-    if(btn) {
-      const onclick = btn.getAttribute('onclick');
-      const idMatch = onclick.match(/'([^']+)'/);
-      if(idMatch) {
-        try { await fetch(`${BACKEND_URL}/api/memory/${idMatch[1]}`, {method:'DELETE'}); } catch(e){}
-      }
+  const items=document.querySelectorAll('.mem-item');
+  const promises=[];
+  items.forEach(item=>{
+    if(item.dataset.id){
+      promises.push(fetch(`${BACKEND_URL}/api/memory/${item.dataset.id}`,{method:'DELETE'}).catch(()=>{}));
     }
-  }
-  document.getElementById('mem-list').innerHTML = '<div class="mem-empty">No memories yet</div>';
+  });
+  await Promise.all(promises); // ← FIX: parallel deletes, not sequential
+  document.getElementById('mem-list').innerHTML='<div class="mem-empty">No memories yet</div>';
 }
 
-function toggleMemPanel() {
-  const panel = document.getElementById('mem-panel');
+function toggleMemPanel(){
+  const panel=document.getElementById('mem-panel');
   panel.classList.toggle('open');
   if(panel.classList.contains('open')) loadMemories();
 }
 
-/* ── SEND ── */
-async function sendMsg() {
-  if(isSending) return;
-  const text = document.getElementById('chat-input').value.trim();
-  if(!text && !selectedFile) return;
-
-  const fileToSend = selectedFile;
-  const imgUrl = fileToSend && fileToSend.type.startsWith('image/') ? URL.createObjectURL(fileToSend) : null;
-
-  resetInput();
-  addMsg('user', text || '[File uploaded]', imgUrl);
-
-  isSending = true;
-  document.getElementById('send-btn').disabled = true;
-  document.getElementById('status-text').textContent = 'Thinking...';
-  addTyping();
-
-  try {
-    let reply = '';
-    let searchUsed = false;
-    let sources = [];
-    let modelUsed = 'llama-3.3-70b-versatile';
-
-    if(fileToSend) {
-      // ── FILE/IMAGE UPLOAD ──
-      const formData = new FormData();
-      formData.append('file', fileToSend);
-      formData.append('instruction', text || 'Analyze this file thoroughly.');
-      formData.append('tone', currentTone);
-
-      const res = await fetch(`${BACKEND_URL}/api/upload`, { method:'POST', body:formData });
-      if(!res.ok) { const e=await res.json(); throw new Error(e.error||'Upload failed'); }
-      const data = await res.json();
-      reply = data.reply;
-
-    } else {
-      // ── SMART CHAT (server decides if search is needed) ──
-      const cleanHistory = msgHistory.filter(m => m.role && m.content && m.content.trim() !== '');
-
-      const res = await fetch(`${BACKEND_URL}/api/chat`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          message: text,
-          history: cleanHistory.slice(-20),
-          tone: currentTone,
-          hinglish: hinglishOn,
-          searchEnabled: searchOn
-        })
-      });
-      if(!res.ok) { const e=await res.json(); throw new Error(e.error||'Chat failed'); }
-      const data = await res.json();
-      reply = data.reply;
-      sources = data.sources || [];
-      searchUsed = data.searchUsed || false;
-      if(data.model) modelUsed = data.model;
-      if(data.siteAnalyzed) {
-        document.getElementById('status-text').textContent = `Analyzed: ${data.siteAnalyzed}`;
-      }
-      // Show query type in model info
-      if(data.queryType) {
-        const typeLabel = {simple:'⚡ Fast', standard:'🧠 Standard', deep:'🔬 Deep Reasoning', creative:'🎨 Creative'}[data.queryType] || '';
-        document.getElementById('model-info').textContent = `${data.model||modelUsed} · ${typeLabel}`;
-      }
-
-      // Add to history only AFTER successful response
-      msgHistory.push({role:'user', content:text});
-      msgHistory.push({role:'assistant', content:reply});
-    }
-
-    removeTyping();
-    const el = addMsg('bot', reply, null, searchUsed, sources);
-    speak(reply, el);
-    document.getElementById('model-info').textContent = modelUsed;
-    document.getElementById('status-text').textContent = 'Online — Groq AI';
-
-  } catch(err) {
-    removeTyping();
-    addMsg('bot', `❌ **Error:** ${err.message}\n\nBackend URL: \`${BACKEND_URL}\``);
-    document.getElementById('status-text').textContent = '⚠ Error';
-  }
-
-  if(fileToSend) removeFile();
-  isSending = false;
-  document.getElementById('send-btn').disabled = false;
+/* ════════════════════════════════════════════════
+   STOP STREAM
+════════════════════════════════════════════════ */
+function stopStream(){
+  if(abortCtrl){ abortCtrl.abort(); }
+  document.getElementById('stop-btn').classList.remove('show');
+  document.getElementById('send-btn').disabled=false;
+  document.getElementById('send-btn').style.display='';
+  removeTyping();
+  setStatus('Stopped · Groq AI');
+  isSending=false;
 }
 
-function ask(el) {
-  document.getElementById('chat-input').value = el.textContent.replace(/[🔍🇮🇳]/g,'').trim();
+/* ════════════════════════════════════════════════
+   ★ SEND MESSAGE — FIXED SSE STREAMING ★
+════════════════════════════════════════════════ */
+async function sendMsg(){
+  if(isSending) return;
+  const text=document.getElementById('chat-input').value.trim();
+  if(!text&&!selectedFile) return;
+
+  const fileToSend=selectedFile;
+  const imgUrl=fileToSend&&fileToSend.type.startsWith('image/')
+    ? URL.createObjectURL(fileToSend) : null;
+
+  resetInput();
+  addMsg('user',text||'[File uploaded]',imgUrl);
+
+  isSending=true;
+  document.getElementById('send-btn').disabled=true;
+  document.getElementById('stop-btn').classList.add('show');
+  setStatus('Thinking...');
+  addTyping();
+
+  // Warm up timer — show cold banner after 5s if no response
+  let warmupTimer=null;
+  if(!serverWarm){
+    warmupTimer=setTimeout(startColdTimer, 5000);
+  }
+
+  try {
+    /* ── FILE UPLOAD (non-streaming) ── */
+    if(fileToSend){
+      const formData=new FormData();
+      formData.append('file',fileToSend);
+      formData.append('instruction',text||'Analyze this file thoroughly.');
+      formData.append('tone',currentTone);
+      abortCtrl=new AbortController();
+      const res=await fetch(`${BACKEND_URL}/api/upload`,{method:'POST',body:formData,signal:abortCtrl.signal});
+      if(!res.ok){ const e=await res.json(); throw new Error(e.error||'Upload failed'); }
+      const data=await res.json();
+      clearTimeout(warmupTimer); stopColdTimer();
+      removeTyping();
+      const el=addMsg('bot',data.reply,null,false,[]);
+      speak(data.reply,el);
+      msgHistory.push({role:'user',content:text||'[file]'});
+      msgHistory.push({role:'assistant',content:data.reply});
+      setStatus('Online — Groq AI');
+      removeFile();
+    }
+    /* ── ★ SSE STREAMING CHAT ★ ── */
+    else {
+      abortCtrl=new AbortController();
+      const cleanHistory=msgHistory
+        .filter(m=>m.role&&m.content&&m.content.trim()!=='')
+        .slice(-20);
+
+      const res=await fetch(`${BACKEND_URL}/api/chat`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          message:text,
+          history:cleanHistory,
+          tone:currentTone,
+          hinglish:hinglishOn,
+          searchEnabled:searchOn
+        }),
+        signal:abortCtrl.signal
+      });
+
+      if(!res.ok){ const e=await res.json(); throw new Error(e.error||`HTTP ${res.status}`); }
+      clearTimeout(warmupTimer); stopColdTimer();
+
+      // ── Read SSE stream ──
+      const reader=res.body.getReader();
+      const decoder=new TextDecoder();
+      let buffer='';
+      let fullReply='';
+      let bubble=null;
+      let renderDiv=null;
+      let streamMeta={searchUsed:false,sources:[],model:'llama-3.3-70b-versatile',intent:'general'};
+      let renderTimer=null;
+      let charCount=0;
+      const msgs=document.getElementById('messages');
+
+      // Debounced markdown render (avoids too many DOM updates while streaming)
+      function scheduleRender(){
+        if(renderTimer) return;
+        renderTimer=setTimeout(()=>{
+          renderTimer=null;
+          if(!renderDiv) return;
+          renderDiv.innerHTML=renderMarkdown(fullReply);
+          renderDiv.querySelectorAll('pre code').forEach(el=>{try{hljs.highlightElement(el);}catch(e){}});
+          msgs.scrollTop=msgs.scrollHeight;
+        },40);
+      }
+
+      while(true){
+        const{done,value}=await reader.read();
+        if(done) break;
+
+        buffer+=decoder.decode(value,{stream:true});
+        const lines=buffer.split('\n');
+        buffer=lines.pop(); // keep incomplete line in buffer
+
+        for(const line of lines){
+          if(!line.startsWith('data: ')) continue;
+          const raw=line.slice(6).trim();
+          if(!raw) continue;
+
+          let parsed;
+          try{ parsed=JSON.parse(raw); } catch(e){ continue; }
+
+          /* ── meta event: intent, model, search status ── */
+          if(parsed.type==='meta'){
+            streamMeta={
+              searchUsed:parsed.searchUsed||false,
+              sources:parsed.sources||[],
+              model:parsed.model||'llama-3.3-70b-versatile',
+              intent:parsed.intent||'general',
+              siteAnalyzed:parsed.siteAnalyzed||null,
+            };
+            removeTyping();
+            // Create streaming bubble
+            const wrap=document.createElement('div');
+            wrap.className='msg bot';
+            const avatar=document.createElement('div');
+            avatar.className='avatar'; avatar.textContent='J';
+            const right=document.createElement('div');
+            right.style.flex='1'; right.style.minWidth='0';
+            bubble=document.createElement('div');
+            bubble.className='bubble streaming';
+            renderDiv=document.createElement('div');
+            const cursor=document.createElement('span');
+            cursor.className='stream-cursor'; cursor.id='stream-cursor';
+            bubble.appendChild(renderDiv);
+            bubble.appendChild(cursor);
+            right.appendChild(bubble);
+            wrap.appendChild(avatar); wrap.appendChild(right);
+            msgs.appendChild(wrap);
+            // Update model info
+            document.getElementById('model-info').textContent=streamMeta.model;
+            if(streamMeta.siteAnalyzed) setStatus(`Analyzing: ${streamMeta.siteAnalyzed}`);
+            else if(streamMeta.searchUsed) setStatus('Searching web...');
+            else setStatus('Generating...');
+            continue;
+          }
+
+          /* ── token event: append to reply ── */
+          if(parsed.type==='token'&&parsed.token){
+            fullReply+=parsed.token;
+            charCount+=parsed.token.length;
+            if(!bubble){
+              // meta never came (shouldn't happen, but safe fallback)
+              removeTyping();
+              const wrap=document.createElement('div');
+              wrap.className='msg bot';
+              const av=document.createElement('div'); av.className='avatar'; av.textContent='J';
+              const ri=document.createElement('div'); ri.style.flex='1';
+              bubble=document.createElement('div'); bubble.className='bubble streaming';
+              renderDiv=document.createElement('div');
+              bubble.appendChild(renderDiv);
+              ri.appendChild(bubble); wrap.appendChild(av); wrap.appendChild(ri);
+              msgs.appendChild(wrap);
+            }
+            scheduleRender();
+            continue;
+          }
+
+          /* ── done event: finalize ── */
+          if(parsed.type==='done'){
+            if(renderTimer){ clearTimeout(renderTimer); renderTimer=null; }
+            if(renderDiv){
+              renderDiv.innerHTML=renderMarkdown(fullReply);
+              renderDiv.querySelectorAll('pre code').forEach(el=>{try{hljs.highlightElement(el);}catch(e){}});
+            }
+            // Remove cursor
+            document.getElementById('stream-cursor')?.remove();
+            if(bubble) bubble.classList.remove('streaming');
+
+            // Add source chips
+            if(streamMeta.sources&&streamMeta.sources.length>0&&bubble){
+              const chips=document.createElement('div');
+              chips.className='src-chips';
+              streamMeta.sources.slice(0,4).forEach(s=>{
+                if(s.url){
+                  const a=document.createElement('a');
+                  a.className='src-chip'; a.href=s.url; a.target='_blank';
+                  a.textContent=(s.title||s.url).replace(/https?:\/\//,'').slice(0,30);
+                  chips.appendChild(a);
+                }
+              });
+              if(chips.children.length) bubble.appendChild(chips);
+            }
+
+            // Add meta row under bubble
+            if(bubble&&bubble.parentElement){
+              const meta=document.createElement('div');
+              meta.className='msg-meta';
+              meta.innerHTML=`<span>${nowTime()}</span>`;
+              if(streamMeta.searchUsed) meta.innerHTML+=`<span class="search-badge">🔍 web</span>`;
+              if(streamMeta.intent&&streamMeta.intent!=='general') meta.innerHTML+=`<span class="intent-badge">${streamMeta.intent}</span>`;
+              meta.innerHTML+=`<span class="token-count">${charCount} chars</span>`;
+              const copyBtn=document.createElement('button');
+              copyBtn.className='copy-btn'; copyBtn.textContent='copy';
+              const capturedReply=fullReply;
+              copyBtn.onclick=()=>{ navigator.clipboard.writeText(capturedReply).then(()=>{ copyBtn.textContent='copied!'; setTimeout(()=>copyBtn.textContent='copy',2000); }); };
+              meta.appendChild(copyBtn);
+              bubble.parentElement.appendChild(meta);
+            }
+
+            msgs.scrollTop=msgs.scrollHeight;
+            speak(fullReply,bubble);
+            msgHistory.push({role:'user',content:text});
+            msgHistory.push({role:'assistant',content:fullReply});
+            document.getElementById('model-info').textContent=streamMeta.model;
+            setStatus('Online — Groq AI');
+            continue;
+          }
+
+          /* ── error event ── */
+          if(parsed.type==='error'){
+            removeTyping();
+            document.getElementById('stream-cursor')?.remove();
+            addMsg('bot',`❌ **Error:** ${parsed.error}`);
+            setStatus('⚠ Error');
+          }
+        }
+      }
+    }
+
+  } catch(err){
+    clearTimeout(warmupTimer);
+    if(err.name==='AbortError'){
+      // User stopped — already handled in stopStream()
+    } else {
+      stopColdTimer();
+      removeTyping();
+      document.getElementById('stream-cursor')?.remove();
+      const isNetworkErr = err.message.includes('Failed to fetch') || err.message.includes('NetworkError');
+      const errMsg = isNetworkErr
+        ? `❌ **Server unreachable.**\n\nRender free tier may be sleeping. Wait 30s and try again.\n\n\`${BACKEND_URL}\``
+        : `❌ **Error:** ${err.message}`;
+      addMsg('bot',errMsg);
+      setStatus('⚠ Error');
+    }
+  }
+
+  isSending=false;
+  document.getElementById('send-btn').disabled=false;
+  document.getElementById('stop-btn').classList.remove('show');
+  if(fileToSend) removeFile();
+}
+
+function ask(el){
+  document.getElementById('chat-input').value=el.textContent.replace(/[🔍🇮🇳]/g,'').trim();
   sendMsg();
 }
 
-/* ── MIC ── */
-function toggleMic() {
-  if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
+/* ════════════════════════════════════════════════
+   MIC INPUT
+════════════════════════════════════════════════ */
+function toggleMic(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
     alert('Voice input needs Chrome!'); return;
   }
-  const btn = document.getElementById('mic-btn');
+  const btn=document.getElementById('mic-btn');
   if(isListening){ recognition.stop(); return; }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = hinglishOn ? 'hi-IN' : 'en-IN';
-  recognition.continuous = false;
-  recognition.onresult = e => {
-    document.getElementById('chat-input').value = e.results[0][0].transcript;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang=hinglishOn?'hi-IN':'en-IN';
+  recognition.continuous=false;
+  recognition.onresult=e=>{
+    document.getElementById('chat-input').value=e.results[0][0].transcript;
     sendMsg();
   };
-  recognition.onend = () => { isListening=false; btn.classList.remove('listening'); btn.textContent='🎤'; };
+  recognition.onend=()=>{ isListening=false; btn.classList.remove('listening'); btn.textContent='🎤'; };
   recognition.start();
-  isListening = true; btn.classList.add('listening'); btn.textContent = '🔴';
+  isListening=true; btn.classList.add('listening'); btn.textContent='🔴';
 }
 
-/* ── CLOSE DROPDOWNS ON OUTSIDE CLICK ── */
-document.addEventListener('click', e => {
+/* ════════════════════════════════════════════════
+   CLOSE DROPDOWNS ON OUTSIDE CLICK
+════════════════════════════════════════════════ */
+document.addEventListener('click',e=>{
   if(!e.target.closest('.tone-wrap')) document.getElementById('tone-menu').classList.remove('open');
-  if(!e.target.closest('.mem-panel') && !e.target.closest('#mem-btn')) document.getElementById('mem-panel').classList.remove('open');
+  if(!e.target.closest('.mem-panel')&&!e.target.closest('#mem-btn')) document.getElementById('mem-panel').classList.remove('open');
 });
 
-/* ── INIT ── */
-window.addEventListener('load', () => {
-  document.getElementById('status-text').textContent = 'Online — Groq AI';
-  // DO NOT push welcome message to msgHistory — that was the bug
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  setStatus('Online — Groq AI');
+
+  // Ping backend to pre-warm it silently
+  fetch(`${BACKEND_URL}/api/health`,{method:'GET'})
+    .then(r=>r.json())
+    .then(()=>{ serverWarm=true; })
+    .catch(()=>{});
 });
 </script>
 </body>
